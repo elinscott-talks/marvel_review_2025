@@ -39,13 +39,15 @@ Our progress on Koopmans functionals, with the goal of band structure calculatio
 - automated
 
 #pause
-#grid(columns: 5, column-gutter: 1em, align: center, row-gutter: 0.5em,
-  image("media/mugshots/nicola_colonna.png", height: 50%),
-  image("media/mugshots/giovanni_cistaro.jpeg", height: 50%),
-  image("media/mugshots/yannick_schubert.jpg", height: 50%),
-  image("media/mugshots/miki_bonacci.jpg", height: 50%),
-  image("media/mugshots/nicola_marzari.jpeg", height: 50%),
-  [Nicola Colonna], [Giovanni Cistaro], [Yannick Schubert], [Miki Bonacci], [Nicola Marzari]
+#grid(columns: 7, column-gutter: 1em, align: center, row-gutter: 0.5em,
+  image("media/mugshots/nicola_colonna.png", height: 40%),
+  image("media/mugshots/giovanni_cistaro.jpeg", height: 40%),
+  image("media/mugshots/yannick_schubert.jpg", height: 40%),
+  image("media/mugshots/junfeng_qiao.jpeg", height: 40%),
+  image("media/mugshots/miki_bonacci.jpg", height: 40%),
+  image("media/mugshots/julian_geiger.jpg", height: 40%),
+  image("media/mugshots/nicola_marzari.jpeg", height: 40%),
+  [Nicola Colonna], [Giovanni Cistaro], [Yannick Schubert], [Junfeng Qiao], [Miki Bonacci], [Julian Geiger], [Nicola Marzari]
 )
 
 == Koopmans functionals in a nutshell
@@ -177,6 +179,18 @@ Text
 
 = Automation
 == Automated Wannierization
+#slide(repeat: 2, self => [
+  #let (uncover, only, alternatives) = utils.methods(self)
+
+  Koopmans functionals use Wannier functions heavily either...
+  - to initialize the a guess for the orbitals that minimize the ODD functional
+  - in place of the minimizing orbitals entirely
+  
+  However, Wannierization #alternatives[is a very manual process...][*was* a very manual process!]
+
+])
+
+== Automated Wannierization
 
 #grid(
   columns: (2fr, 2fr, 3fr),
@@ -192,9 +206,47 @@ Text
 )
 
 == AiiDA integration
-Text
 
-Make the point that this enables integration within `AiiDAlab` — the goal being a GUI interface where experimentalists can run these calculations directly@Yakutovich2021
+#matrix-slide(align: top + left)[
+  #image("media/logos/koopmans_grey_on_transparent.svg", height: 2em)
+  - local execution only #pause
+  - serial step execution #pause
+  - direct access to input/output files #pause
+  - simpler installation #pause
+][
+  #image("media/logos/aiida.svg", height: 2em)
+  - remote execution #pause
+  - parallel step execution #pause
+  - outputs stored in a database #pause
+  - installation more involved #pause
+
+  We could really benefit from a lot of the features of `AiiDA` _e.g._ the calculation of screening parameters is embarrassingly parallelizable.
+]
+
+#image("media/logos/koopmans_grey_on_transparent_aiida.svg", width: 100%)
+
+== Speed-up
+
+== What did this require?
+- substantial refactoring of the `koopmans` code base
+  - abstraction of various operations (e.g. reading/writing files)
+  - conversion of steps to pure functions, _etc._)
+  - removing all reliance on shared directories
+- `aiida-blitz` for simplified `AiiDA` setup
+- `?` for dumping contents of `AiiDA` database to a local file structure
+
+== What did all this work enable?
+ADD PLOT OF SPEED-UPS
+
+- unchanged interface from the perspective of the user
+
+  `$ koopmans tio2.json`
+
+  #pause to
+
+  `$ koopmans --engine=aiida tio2.json`
+
+
 
 = Summary
 == Summary
@@ -212,7 +264,9 @@ Make the point that this enables integration within `AiiDAlab` — the goal bein
     - more *accessible* thanks to ongoing work on the `koopmans` package #pause
     - more *automated* thanks to
       - automated Wannierization
-      - a new integration with `AiiDA` #pause
+      - a new integration with `AiiDA`...#pause
+        with an `AiiDAlab` app on the horizon!
+
   ],
 )
 
