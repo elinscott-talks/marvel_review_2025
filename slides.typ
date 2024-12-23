@@ -1,7 +1,7 @@
 #import "touying/lib.typ": *
 #import "@preview/pinit:0.1.4": *
 #import "@preview/xarrow:0.3.0": xarrow
-#import "@preview/cetz:0.3.0"
+#import "@preview/cetz:0.3.0": canvas, draw, vector, matrix
 #import themes.marvel: *
 
 #set text(font: "Myriad Pro") 
@@ -27,7 +27,7 @@
   text(fill: white, cite(reference))
 }
 
-#let cetz-canvas = touying-reducer.with(reduce: cetz.canvas, cover: cetz.draw.hide.with(bounds: true))
+#let cetz-canvas = touying-reducer.with(reduce: canvas, cover: draw.hide.with(bounds: true))
 
 #title-slide()
 == This talk
@@ -51,6 +51,66 @@ Our progress on Koopmans functionals, with the goal of band structure calculatio
 )
 
 == Koopmans functionals in a nutshell
+
+#canvas({
+  import draw: *
+
+  // grid((0,-5), (8,5), stroke: gray + .5pt)
+
+  // Valence
+  rect((-1, -1), (1, 1), stroke: none, fill: marvel-lightred, alpha: 0.5)
+  line((-1, 1), (1, 1), stroke: marvel-red, weight: 5pt)
+  content((1.75, 1), [$E_F$], align: left)
+  circle((0, 0), radius: 0.2, fill: none, stroke: (dash: "dashed", paint: marvel-red))
+
+  // Vacuum
+  circle((0, 4), radius: 0.2, fill: marvel-red, stroke: none)
+  line((-1, 3.5), (1, 3.5), stroke: (dash: "dashed", paint: marvel-red))
+  content((1.75, 3.5), [$E_"vac"$], align: left)
+
+  // Arrow
+  arc((0,0), start: -30deg, stop: 30deg, radius: 4, mark: (end: ">", fill: black))
+  
+
+
+  let photon(amplitude: 1, phases: 2, scale: 8, samples: 1000, angle: 0, start-x: 0, start-y: 0, ..args) = {
+    line(..(for x in range(0, samples + 1) {
+      let x = x / samples
+      // A Gaussian envelope with sigma = 1/4 and mean = 1/2 and height = amplitude
+      let envelope = amplitude * calc.exp(-calc.pow(((x - 0.5) / (0.25)), 2))
+
+      let phase = (2 * phases * calc.pi) * x
+
+      // Rotate the output by angle
+      let xval = x * scale
+      let yval = calc.sin(phase) * envelope
+
+      let rotated-x = xval * calc.cos(angle) - yval * calc.sin(angle)
+      let rotated-y = xval * calc.sin(angle) + yval * calc.cos(angle)
+      ((start-x + rotated-x, start-y + rotated-y),)
+    }), ..args)
+
+    let subdivs = 8
+    for phase in range(0, phases) {
+      let x = phase / phases
+      for div in range(1, subdivs + 1) {
+        let p = 2 * calc.pi * (div / subdivs)
+        let y = calc.sin(p) * amplitude
+        let x = x * scale + div / subdivs * scale / phases
+      }
+    }
+  }
+  photon(amplitude: 0.8, phases: 9, start-x: -0.25, start-y: 0.25, scale: 3, fill: none, angle: 2.5, mark: (start: ">", fill: black))
+})
+
+How to routinely obtain spectral properties?
+- GW: accurate but often ill-behaved
+- DFT: plagued by systematic errors
+
+💡Koopmans functionals: cure the systematic errors in DFT $arrow.r$ a functional that can accurately predict single-particle excitations
+
+#pagebreak()
+
 $
   E^"KI"_bold(alpha) [rho, {rho_i}] =
   E^"DFT" [rho] +
@@ -131,7 +191,7 @@ table.hline(),
 )
 ]
 
-CsPbBr#sub[3]@Marrazzo2024a
+CsPbBr#sub[3]@Marrazzo2024
 #v(-2em)
 #align(center + horizon,
 image("figures/marrazzo_CsPbBr3_bands.svg", height: 60%)
@@ -344,15 +404,15 @@ Bakes the total energy differences $E^"DFT" [rho^(f_i arrow.r 1)] - E^"DFT" [rho
 // $
 #align(center + horizon, 
 grid(align: center + horizon, columns: 3, column-gutter: 2cm, row-gutter: 1cm,
-cetz.canvas({
-  import cetz.draw: *
+canvas({
+  import draw: *
   content((1.25, 1.5), [$rho$])
   circle((0, 0), radius: 1, fill: marvel-red, stroke: none)
   circle((2.5, 0), radius: 1, fill: marvel-red, stroke: none)
 
 }),
-cetz.canvas({
-  import cetz.draw: *
+canvas({
+  import draw: *
 
   content((9, 1.5), [$rho^(f_1 arrow.r 0)$])
   arc((10.75, 0), start: 0deg, stop: 360deg, radius: (1.5, 1), fill: marvel-red, stroke: none)
@@ -360,8 +420,8 @@ cetz.canvas({
   circle((8, 0), radius: 1, fill: none, stroke: (dash: "dashed", thickness: 2pt, paint: white))
   // content((8, -1.5), [$f_1 = 0$])
 }),
-cetz.canvas({
-  import cetz.draw: *
+canvas({
+  import draw: *
 
   content((17.25, 1.5), [$rho - |psi^N_1(r)|^2$])
   circle((16, 0), radius: 1, fill: none, stroke: (dash: "dashed", thickness: 2pt, paint: marvel-red))
@@ -535,7 +595,7 @@ table.hline(),
   
 ]
 
-Spin-orbit coupling@Marrazzo2024a
+Spin-orbit coupling@Marrazzo2024
 #align(center + horizon,
 image("figures/marrazzo_CsPbBr3_bands.svg", height: 80%)
 )
