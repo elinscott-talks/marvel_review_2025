@@ -31,28 +31,28 @@
 
 #title-slide()
 == This talk
-Our progress on Koopmans functionals, with the goal of band structure calculations that are...
-
-- accurate
-- efficient
-- accessible
-- automated
+A whistlestop tour of our progress on Koopmans functionals over the past year
 
 #pause
-#grid(columns: 7, column-gutter: 1em, align: center, row-gutter: 0.5em,
+#grid(columns: 8, column-gutter: 0.5em, align: center, row-gutter: 0.5em,
   image("media/mugshots/nicola_colonna.png", height: 40%),
+  image("media/mugshots/marija_stojkovic.jpg", height: 40%),
   image("media/mugshots/giovanni_cistaro.jpeg", height: 40%),
   image("media/mugshots/yannick_schubert.jpg", height: 40%),
   image("media/mugshots/junfeng_qiao.jpeg", height: 40%),
   image("media/mugshots/miki_bonacci.jpg", height: 40%),
   image("media/mugshots/julian_geiger.jpg", height: 40%),
   image("media/mugshots/nicola_marzari.jpeg", height: 40%),
-  [Nicola Colonna], [Giovanni Cistaro], [Yannick Schubert], [Junfeng Qiao], [Miki Bonacci], [Julian Geiger], [Nicola Marzari]
+  [Nicola Colonna], [Marija Stojkovic], [Giovanni Cistaro], [Yannick Schubert], [Junfeng Qiao], [Miki Bonacci], [Julian Geiger], [Nicola Marzari]
 )
 
 == Koopmans functionals in a nutshell
 
-#canvas({
+Spectral properties are fundamental to understanding materials:
+
+#align(center, 
+grid(columns: 3, column-gutter:  1em,
+canvas({
   import draw: *
 
   // grid((0,-5), (8,5), stroke: gray + .5pt)
@@ -71,8 +71,6 @@ Our progress on Koopmans functionals, with the goal of band structure calculatio
   // Arrow
   arc((0,0), start: -30deg, stop: 30deg, radius: 4, mark: (end: ">", fill: black))
   
-
-
   let photon(amplitude: 1, phases: 2, scale: 8, samples: 1000, angle: 0, start-x: 0, start-y: 0, ..args) = {
     line(..(for x in range(0, samples + 1) {
       let x = x / samples
@@ -101,11 +99,14 @@ Our progress on Koopmans functionals, with the goal of band structure calculatio
     }
   }
   photon(amplitude: 0.8, phases: 9, start-x: -0.25, start-y: 0.25, scale: 3, fill: none, angle: 2.5, mark: (start: ">", fill: black))
-})
+}),
+  image("figures/arpes.png", height: 45%),
+  image("figures/arpes_puppin.png", height: 45%),
+))
 
-How to routinely obtain spectral properties?
-- GW: accurate but often ill-behaved
-- DFT: plagued by systematic errors
+#pause ... but how can we routinely compute them? #pause
+- GW: accurate but expensive and often ill-behaved; diagrammatic #pause
+- DFT: plagued by systematic errors #pause
 
 💡Koopmans functionals: cure the systematic errors in DFT $arrow.r$ a functional that can accurately predict single-particle excitations
 
@@ -128,6 +129,15 @@ $
 - screening parameters #pause
 - orbital-density-dependence
 
+
+== This talk
+
+Our goal with Koopmans functionals: band structure calculations that are...
+
+- accurate
+- efficient
+- accessible
+- automated
 
 = Accuracy
 == The accuracy of Koopmans functionals
@@ -163,17 +173,51 @@ table.hline(),
 ))
 ]
 
-== The accuracy of Koopmans functionals
-#slide[
-ZnO@Colonna2022
-#v(-1em)
-#align(center + horizon,
-grid(align: center + horizon, columns: 3, column-gutter: 1em,
-image("figures/ZnO_lda_cropped.png", height: 50%),
-image("figures/ZnO_hse_cropped_noaxis.png", height: 50%),
-image("figures/ZnO_ki_cropped_noaxis.png", height: 50%),
-))
+// == The accuracy of Koopmans functionals
+// #slide[
+// ZnO@Colonna2022
+// #v(-1em)
+// #align(center + horizon,
+// grid(align: center + horizon, columns: 3, column-gutter: 1em,
+// image("figures/ZnO_lda_cropped.png", height: 50%),
+// image("figures/ZnO_hse_cropped_noaxis.png", height: 50%),
+// image("figures/ZnO_ki_cropped_noaxis.png", height: 50%),
+// ))
+// 
+// #show table.cell: it => {
+//   if it.x == 5 {
+//     set text(fill: marvel-red, weight: "semibold")
+//     it
+//   } else {
+//     it
+//   }
+// }
+// #table(align: center, columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1.5fr), inset: 0.5em, stroke: none,
+// table.header([], [LDA ], [HSE ], [GW#sub[0] ], [scGW̃ ], [KI ], [exp ]),
+// table.hline(),
+// [$E_"gap"$], [0.79], [2.79], [3.0], [3.2], [3.68], [3.60],
+// [$angle.l epsilon_d angle.r$], [-5.1], [-6.1], [-6.4], [-6.7], [-6.9], [-7.5 to -8.81 ],
+// [$Delta$], [4.15], [], [], [], [4.99], [5.3]
+// )
+// ]
 
+CsPbBr#sub[3]@Marrazzo2024
+#v(-2em)
+#align(center + horizon,
+image("figures/marrazzo_CsPbBr3_bands.svg", height: 60%)
+)
+#table(align: center, columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1.5fr), inset: 0.5em, stroke: none,
+table.header([], [LDA ], [HSE ], [G#sub[0]W#sub[0] ], [scGW̃ ], [*KI*], [exp ]),
+table.hline(),
+[*with SOC*], [0.18], [0.78], [0.94], [1.53], [*1.78*], [1.85],
+[without SOC], [1.40], [2.09], [2.56], [3.15], [3.12], [],
+)
+
+#slide()[
+TiO#sub[2] INSERT CITATION HERE
+
+#v(-2em)
+#align(center, image("figures/rutile.png", height: 65%))
 #show table.cell: it => {
   if it.x == 5 {
     set text(fill: marvel-red, weight: "semibold")
@@ -182,26 +226,16 @@ image("figures/ZnO_ki_cropped_noaxis.png", height: 50%),
     it
   }
 }
-#table(columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1.5fr), inset: 0.5em, stroke: none,
-table.header([], [LDA ], [HSE ], [GW#sub[0] ], [scGW̃ ], [KI ], [exp ]),
+#v(-1em)
+
+#table(align: center, columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr), inset: 0.5em, stroke: none,
+table.header([], [PBE ], [HSE06 ], [G#sub[0]W#sub[0]\@PBE ], [scQPG#sym.tilde[W]], [KI ], [exp - ZPR]),
 table.hline(),
-[$E_"gap"$], [0.79], [2.79], [3.0], [3.2], [3.68], [3.60],
-[$angle.l epsilon_d angle.r$], [-5.1], [-6.1], [-6.4], [-6.7], [-6.9], [-7.5 to -8.81 ],
-[$Delta$], [4.15], [], [], [], [4.99], [5.3]
+[$E_"gap"$], [1.73], [3.39], [3.46], [5.18], [3.29], [3.34 to 3.41],
+[IP], [7.22], [8.66], [7.29], [8.77], [8.00], [8.5],
+[EA], [5.55], [4.99], [3.03], [3.59], [4.71], [5.0]
 )
 ]
-
-CsPbBr#sub[3]@Marrazzo2024
-#v(-2em)
-#align(center + horizon,
-image("figures/marrazzo_CsPbBr3_bands.svg", height: 60%)
-)
-#table(columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1.5fr), inset: 0.5em, stroke: none,
-table.header([], [LDA ], [HSE ], [G#sub[0]W#sub[0] ], [scGW̃ ], [*KI*], [exp ]),
-table.hline(),
-[*with SOC*], [0.18], [0.78], [0.94], [1.53], [*1.78*], [1.85],
-[without SOC], [1.40], [2.09], [2.56], [3.15], [3.12], [],
-)
 
 
 = Efficiency
@@ -209,8 +243,90 @@ table.hline(),
 == Taking advantage of symmetries
 Text
 
-== Machine-learning
-Text
+== Electronic screening via machine learning
+
+A key ingredient of Koopmans functional calculations are the screening parameters:
+
+$
+  alpha_i = (angle.l n_i|epsilon^(-1) f_"Hxc"|n_i angle.r) / (angle.l n_i|f_"Hxc"|n_i angle.r)
+$
+
+#pause
+
+- a local measure of the degree by which electronic interactions are screened #pause
+- one screening parameter per (non-equivalent) orbital #pause
+- must be computed #emph[ab initio] via $Delta$SCF@Nguyen2018@DeGennaro2022a or DFPT@Colonna2018@Colonna2022 #pause
+- corresponds to the vast majority of the computational cost of Koopmans functional calculation
+
+
+#slide[
+  The ML framework
+  #align(
+    center,
+    grid(
+      columns: 5,
+      align: horizon,
+      gutter: 1em,
+      image("figures/orbital.emp.00191_cropped.png", height: 30%),
+      xarrow("power spectrum decomposition"),
+      $vec(delim: "[", x_0, x_1, x_2, dots.v)$,
+      xarrow("ridge regression"),
+      $alpha_i$,
+    ),
+  )
+
+  $
+    c^i_(n l m, k) & = integral dif bold(r) g_(n l) (r) Y_(l m)(theta,phi) n^i (
+      bold(r) - bold(R)^i
+    )
+  $
+
+
+  $
+    p^i_(n_1 n_2 l,k_1 k_2) = pi sqrt(8 / (2l+1)) sum_m c_(n_1 l m,k_1)^(i *) c_(n_2 l m,k_2)^i
+  $
+
+  #blcite(<Schubert2024>)
+]
+
+#pagebreak()
+The use-case
+
+   #grid(columns: 8, column-gutter: 0.3em, row-gutter: 0.3em,
+        image("figures/CsSnI3_disordered.png", width: 100%),
+        image("figures/CsSnI3_disordered.png", width: 100%),
+        image("figures/CsSnI3_disordered.png", width: 100%),
+        image("figures/CsSnI3_disordered.png", width: 100%),
+        image("figures/CsSnI3_disordered.png", width: 100%),
+        image("figures/CsSnI3_disordered.png", width: 100%),
+        image("figures/CsSnI3_disordered.png", width: 100%),
+        grid.cell(align: center + horizon, [...]),
+        grid.cell(inset: 0.4em, align: center, fill: marvel-red, colspan: 3, text(fill: white, "train", size: 1em, weight: "bold")),
+        grid.cell(inset: 0.4em, align: center, fill: marvel-lightred, colspan: 5, text("predict", size: 1em, weight: "bold")),
+  )
+
+  N.B. not a general model
+
+#slide[
+  #grid(
+    columns: (1fr, 1fr),
+    align: center + horizon,
+    gutter: 1em,
+    image(
+      "figures/convergence_analysis_Eg_only.svg",
+      height: 60%,
+    ),
+    image("figures/speedup.svg", height: 60%),
+
+    [*accurate* to within $cal("O")$(10 meV) _cf._ typical band gap accuracy of $cal("O")$(100 meV)],
+    [*speedup* of $cal("O")$(10) to $cal("O")$(100)],
+  )
+
+  REPLACE WITH UPDATED FIGURES
+
+  #blcite(<Schubert2024>)
+]
+
 
 = Accessibility
 == Barriers to accessibility
@@ -238,15 +354,59 @@ Text
 ]
 
 = Automation
+== AiiDA integration
+
+#matrix-slide(align: top + left)[
+  #image("media/logos/koopmans_grey_on_transparent.svg", height: 2em)
+  - local execution only #pause
+  - serial step execution #pause
+  - direct access to input/output files #pause
+  - simpler installation #pause
+][
+  #image("media/logos/aiida.svg", height: 2em)
+  - remote execution #pause
+  - parallel step execution #pause
+  - outputs stored in a database #pause
+  - installation more involved #pause
+
+  We could really benefit from a lot of the features of `AiiDA` _e.g._ the calculation of screening parameters is embarrassingly parallelizable
+]
+
+#image("media/logos/koopmans_grey_on_transparent_aiida.svg", width: 100%)
+
+== Speed-up
+== What did all this work enable?
+
+UI still the same:
+
+  `$ koopmans tio2.json` #pause $arrow.r$ `$ koopmans --engine=aiida tio2.json`
+
+but much faster and with remote excution
+
+#align(center, 
+  image("figures/speed-up.svg", width: 90%)
+)
+
+
+== What did this require?
+- `aiida-blitz` for simplified `AiiDA` setup
+- `?` for dumping contents of `AiiDA` database to a local file structure
+- substantial refactoring of the `koopmans` code base
+  - abstraction of various operations (e.g. reading/writing files)
+  - conversion of steps to pure functions, _etc._)
+  - removing all reliance on shared directories
+
+WORK OUT WHAT ARE THE PROPER NAMES FOR THESE AiiDA TOOLS
+
 == Automated Wannierization
-#slide(repeat: 2, self => [
+#slide(repeat: 4, self => [
   #let (uncover, only, alternatives) = utils.methods(self)
 
-  Koopmans functionals use Wannier functions heavily either...
+  #pause Koopmans functionals use Wannier functions heavily either...
   - to initialize the a guess for the orbitals that minimize the ODD functional
   - in place of the minimizing orbitals entirely
   
-  However, Wannierization #alternatives[is a very manual process...][*was* a very manual process!]
+  #pause However, Wannierization #alternatives(start: 3)[is a very manual process...][*was* a very manual process!]
 
 ])
 
@@ -265,46 +425,6 @@ Text
   text("parallel transport to separate manifolds") + cite(<Qiao2023a>),
 )
 
-== AiiDA integration
-
-#matrix-slide(align: top + left)[
-  #image("media/logos/koopmans_grey_on_transparent.svg", height: 2em)
-  - local execution only #pause
-  - serial step execution #pause
-  - direct access to input/output files #pause
-  - simpler installation #pause
-][
-  #image("media/logos/aiida.svg", height: 2em)
-  - remote execution #pause
-  - parallel step execution #pause
-  - outputs stored in a database #pause
-  - installation more involved #pause
-
-  We could really benefit from a lot of the features of `AiiDA` _e.g._ the calculation of screening parameters is embarrassingly parallelizable.
-]
-
-#image("media/logos/koopmans_grey_on_transparent_aiida.svg", width: 100%)
-
-== Speed-up
-
-== What did this require?
-- substantial refactoring of the `koopmans` code base
-  - abstraction of various operations (e.g. reading/writing files)
-  - conversion of steps to pure functions, _etc._)
-  - removing all reliance on shared directories
-- `aiida-blitz` for simplified `AiiDA` setup
-- `?` for dumping contents of `AiiDA` database to a local file structure
-
-== What did all this work enable?
-ADD PLOT OF SPEED-UPS
-
-- unchanged interface from the perspective of the user
-
-  `$ koopmans tio2.json`
-
-  #pause to
-
-  `$ koopmans --engine=aiida tio2.json`
 
 
 
@@ -323,13 +443,11 @@ ADD PLOT OF SPEED-UPS
       - a new machine learning framework for predicting screening parameters #pause
     - more *accessible* thanks to ongoing work on the `koopmans` package #pause
     - more *automated* thanks to
-      - automated Wannierization
       - a new integration with `AiiDA`...#pause
         with an `AiiDAlab` app on the horizon!
-
+      - automated Wannierization
   ],
 )
-
 #focus-slide()[Thank you!]
 
 == References
