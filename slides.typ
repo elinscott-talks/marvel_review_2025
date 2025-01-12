@@ -2,6 +2,8 @@
 #import "@preview/pinit:0.1.4": *
 #import "@preview/xarrow:0.3.0": xarrow
 #import "@preview/cetz:0.3.0": canvas, draw, vector, matrix
+#import "@preview/algorithmic:0.1.0"
+#import algorithmic: algorithm
 #import themes.marvel: *
 
 #set text(font: "Myriad Pro") 
@@ -61,7 +63,7 @@ canvas({
   rect((-1, -1), (1, 1), stroke: none, fill: marvel-lightred, alpha: 0.5)
   line((-1, 1), (1, 1), stroke: marvel-red, weight: 5pt)
   content((1.75, 1), [$E_F$], align: left)
-  circle((0, 0), radius: 0.2, fill: none, stroke: (dash: "dashed", paint: marvel-red))
+  circle((0, 0), radius: 0.2, fill: white, stroke: (dash: "dashed", paint: marvel-red))
 
   // Vacuum
   circle((0, 4), radius: 0.2, fill: marvel-red, stroke: none)
@@ -124,8 +126,6 @@ $
 
 #pause
 - an orbital-by-orbital correction to DFT #pause
-  - imposes the equivalence between total energy differences and orbital eigenvalues #pause
-  - total energy unchanged! #pause
 - screening parameters #pause
 - orbital-density-dependence
 
@@ -201,7 +201,7 @@ table.hline(),
 // )
 // ]
 
-CsPbBr#sub[3]@Marrazzo2024
+CsPbBr#sub[3] #blcite(<Marrazzo2024>)
 #v(-2em)
 #align(center + horizon,
 image("figures/marrazzo_CsPbBr3_bands.svg", height: 60%)
@@ -214,10 +214,10 @@ table.hline(),
 )
 
 #slide()[
-TiO#sub[2] INSERT CITATION HERE
+TiO#sub[2] #blcite(<Stojkovic2024>)
 
 #v(-2em)
-#align(center, image("figures/rutile.png", height: 65%))
+#align(center, image("figures/rutile.png", height: 60%))
 #show table.cell: it => {
   if it.x == 5 {
     set text(fill: marvel-red, weight: "semibold")
@@ -240,12 +240,9 @@ table.hline(),
 
 = Efficiency
 
-== Taking advantage of symmetries
-Text
+== Screening parameters
 
-== Electronic screening via machine learning
-
-A key ingredient of Koopmans functional calculations are the screening parameters:
+A key ingredient of Koopmans functional calculations:
 
 $
   alpha_i = (angle.l n_i|epsilon^(-1) f_"Hxc"|n_i angle.r) / (angle.l n_i|f_"Hxc"|n_i angle.r)
@@ -255,10 +252,46 @@ $
 
 - a local measure of the degree by which electronic interactions are screened #pause
 - one screening parameter per (non-equivalent) orbital #pause
-- must be computed #emph[ab initio] via $Delta$SCF@Nguyen2018@DeGennaro2022a or DFPT@Colonna2018@Colonna2022 #pause
+- must be computed _ab initio_ via $Delta$SCF@Nguyen2018@DeGennaro2022a or DFPT@Colonna2018@Colonna2022 #pause
 - corresponds to the vast majority of the computational cost of Koopmans functional calculation
 
 
+== Taking advantage of symmetries
+#algorithm({
+  import algorithmic: *
+  Function("CalculateAlpha", args: ($n$,), {
+    For(cond: $bold(q) in "BZ"$,
+    {
+      Cmt[NSCF at $bold(k)$, $bold(k) + bold(q)$]
+        For(cond: $bold(k) in "BZ"$,
+        {
+          Cmt[Linear system $A x = b$ with $"dim"(A)= n_"pw"^2$]
+          Assign[$Pi^((r))_(0 n, bold(q))$][$angle.l Delta rho^(0 n)_(bold(q)) | f_"Hxc" | rho^(0 n)_(bold(q)) angle.r$]
+          Assign[$Pi^((u))_(0 n, bold(q))$][$angle.l rho^(0 n)_bold(q) | f_"Hxc" | rho^(0 n)_bold(q) angle.r$]
+      })
+    })
+    Return[$sum_bold(q) Pi^((r))_(0 n, q) \/ sum_bold(q) Pi^((u))_(0 n, bold(q))$]
+  })
+})
+
+#pause Use symmetry to reduce the terms in the sums:
+#pause
+- $bold(q) in "BZ" $ $arrow.r$ $bold(q) in "IBZ"(n)$ #pause (and adding appropriate weights to the final sum) #pause
+- $bold(k) in "BZ"$ $arrow.r$ $bold(k) in "IBZ"(bold(q))$
+
+TODO DOUBLE-CHECK THIS WITH NICOLA
+
+#slide[
+TODO
+
+Inner sum
+
+Outer sum
+
+Speedup figure
+]
+
+== Electronic screening via machine learning
 #slide[
   The ML framework
   #align(
@@ -276,8 +309,8 @@ $
   )
 
   $
-    c^i_(n l m, k) & = integral dif bold(r) g_(n l) (r) Y_(l m)(theta,phi) n^i (
-      bold(r) - bold(R)^i
+    c^i_(n l m, k) & = integral dif bold(r) g_(n l) (r) Y_(l m)(theta,phi) n_i (
+      bold(r) - bold(R)_i
     )
   $
 
@@ -305,6 +338,7 @@ The use-case
         grid.cell(inset: 0.4em, align: center, fill: marvel-lightred, colspan: 5, text("predict", size: 1em, weight: "bold")),
   )
 
+  #pause
   N.B. not a general model
 
 #slide[
@@ -314,15 +348,17 @@ The use-case
     gutter: 1em,
     image(
       "figures/convergence_analysis_Eg_only.svg",
-      height: 60%,
+      height: 55%,
     ),
-    image("figures/speedup.svg", height: 60%),
+    image("figures/speedup.svg", height: 55%),
 
     [*accurate* to within $cal("O")$(10 meV) _cf._ typical band gap accuracy of $cal("O")$(100 meV)],
     [*speedup* of $cal("O")$(10) to $cal("O")$(100)],
   )
 
-  REPLACE WITH UPDATED FIGURES
+  TODO REPLACE WITH UPDATED FIGURES
+
+  TODO UPDATE WITH NEW CITATION
 
   #blcite(<Schubert2024>)
 ]
@@ -347,10 +383,9 @@ The use-case
   
   - easy installation
   - automated workflows
-  - minimal input required of the user
-  - minimal knowledge required of the user
+  - minimal knowledge required from the user
   
-  For more details: `koopmans-functionals.org`
+  See `koopmans-functionals.org`
 ]
 
 = Automation
@@ -358,30 +393,34 @@ The use-case
 
 #matrix-slide(align: top + left)[
   #image("media/logos/koopmans_grey_on_transparent.svg", height: 2em)
+  Simple by design #pause
   - local execution only #pause
-  - serial step execution #pause
+  - serial step execution (even when steps are independent!) #pause
   - direct access to input/output files #pause
-  - simpler installation #pause
+  - simple installation #pause
 ][
+  #pause
   #image("media/logos/aiida.svg", height: 2em)
+  Powerful by design #pause
   - remote execution #pause
   - parallel step execution #pause
   - outputs stored in a database #pause
   - installation more involved #pause
 
-  We could really benefit from a lot of the features of `AiiDA` _e.g._ the calculation of screening parameters is embarrassingly parallelizable
+  We could really benefit from a lot of these features
 ]
 
-#image("media/logos/koopmans_grey_on_transparent_aiida.svg", width: 100%)
+== Introducing... 
+#align(horizon + center, image("media/logos/koopmans_grey_on_transparent_aiida.svg", width: 100%))
 
-== Speed-up
-== What did all this work enable?
+== What's new
 
-UI still the same:
+UI practically unchanged:
 
   `$ koopmans tio2.json` #pause $arrow.r$ `$ koopmans --engine=aiida tio2.json`
 
-but much faster and with remote excution
+#pause
+but executed remotely and in parallel:
 
 #align(center, 
   image("figures/speed-up.svg", width: 90%)
@@ -389,21 +428,21 @@ but much faster and with remote excution
 
 
 == What did this require?
-- `aiida-blitz` for simplified `AiiDA` setup
-- `?` for dumping contents of `AiiDA` database to a local file structure
-- substantial refactoring of the `koopmans` code base
-  - abstraction of various operations (e.g. reading/writing files)
-  - conversion of steps to pure functions, _etc._)
+#pause - `aiida-blitz` for simplified `AiiDA` setup #pause
+- `?` for dumping contents of `AiiDA` database to a local file structure #pause
+- substantial refactoring of the `koopmans` code base #pause
+  - abstraction of various operations (e.g. reading/writing files) #pause
+  - conversion of steps to pure functions, _etc._ #pause
   - removing all reliance on shared directories
 
-WORK OUT WHAT ARE THE PROPER NAMES FOR THESE AiiDA TOOLS
+TODO WORK OUT WHAT ARE THE PROPER NAMES FOR THESE AiiDA TOOLS
 
 == Automated Wannierization
 #slide(repeat: 4, self => [
   #let (uncover, only, alternatives) = utils.methods(self)
 
-  #pause Koopmans functionals use Wannier functions heavily either...
-  - to initialize the a guess for the orbitals that minimize the ODD functional
+  #pause Koopmans functionals rely heavily on Wannier functions...
+  - to initialize the minmising orbitals, _or_
   - in place of the minimizing orbitals entirely
   
   #pause However, Wannierization #alternatives(start: 3)[is a very manual process...][*was* a very manual process!]
@@ -435,16 +474,16 @@ WORK OUT WHAT ARE THE PROPER NAMES FOR THESE AiiDA TOOLS
   gutter: 1em,
   image("figures/black_box_filled_square.png", width: 100%),
   text[
-    Koopmans functionals are...
+    Koopmans functionals are... #pause
     - *accurate*, with band structures comparable to state-of-the-art GW
       - now also for systems with strong SOC #pause
     - more *efficient* thanks to
-      - a new DFPT implementation that takes advantage of symmetries
+      - DFPT that now takes advantage of symmetries
       - a new machine learning framework for predicting screening parameters #pause
     - more *accessible* thanks to ongoing work on the `koopmans` package #pause
     - more *automated* thanks to
-      - a new integration with `AiiDA`...#pause
-        with an `AiiDAlab` app on the horizon!
+      - a new `AiiDA` backend ...#pause
+        with an `AiiDAlab` app on the horizon! #pause
       - automated Wannierization
   ],
 )
@@ -691,7 +730,7 @@ table.hline(),
 ]
 
 #slide[
-ZnO@Colonna2022
+ZnO #blcite(<Colonna2022>)
 #v(-1em)
 #align(center + horizon,
 grid(align: center + horizon, columns: 3, column-gutter: 1em,
@@ -702,7 +741,7 @@ image("figures/ZnO_ki_cropped_noaxis.png", height: 80%),
 ]
 
 #slide[
-ZnO@Colonna2022
+ZnO #blcite(<Colonna2022>)
 #table(columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1.5fr), inset: 0.5em, stroke: none,
 table.header([], [LDA ], [HSE ], [GW#sub[0] ], [scGW̃ ], [KI ], [exp ]),
 table.hline(),
@@ -713,7 +752,7 @@ table.hline(),
   
 ]
 
-Spin-orbit coupling@Marrazzo2024
+Spin-orbit coupling #blcite(<Marrazzo2024>)
 #align(center + horizon,
 image("figures/marrazzo_CsPbBr3_bands.svg", height: 80%)
 )
@@ -838,9 +877,9 @@ $
     gutter: 1em,
     image(
       "figures/convergence_analysis_Eg_only.svg",
-      height: 60%,
+      height: 55%,
     ),
-    image("figures/speedup.svg", height: 60%),
+    image("figures/speedup.svg", height: 55%),
 
     "accurate to within " + $cal("O")$ + "(10 meV) " + emph("cf.") + " typical band gap accuracy of " + $cal("O")$ + "(100 meV)",
     "speedup of " + $cal("O")$ + "(10) to " + $cal("O")$ + "(100)",
