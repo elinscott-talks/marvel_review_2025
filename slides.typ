@@ -423,7 +423,7 @@ UI practically unchanged:
 but executed remotely and in parallel:
 
 #align(center, 
-  image("figures/speed-up.svg", width: 90%)
+  image("figures/aiida-speed-up.svg", width: 90%)
 )
 
 
