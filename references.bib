@@ -13650,13 +13650,19 @@ Subject\_term\_id: computational-methods;electronic-structure}
   title = {Predicting electronic screening for fast {{Koopmans}} spectral functional calculations},
   author = {Schubert, Yannick and Luber, Sandra and Marzari, Nicola and Linscott, Edward},
   year = {2024},
-  journal = {npj Comp. Mater. (accepted)},
-  eprint = {2406.15205},
-  doi = {10.48550/arXiv.2406.15205},
-  urldate = {2024-11-18},
-  abstract = {Koopmans spectral functionals are a powerful extension of Kohn-Sham density-functional theory (DFT) that enable the prediction of spectral properties with state-of-the-art accuracy. The success of these functionals relies on capturing the effects of electronic screening through scalar, orbital-dependent parameters. These parameters have to be computed for every calculation, making Koopmans spectral functionals more expensive than their DFT counterparts. In this work, we present a machine-learning model that -- with minimal training -- can predict these screening parameters directly from orbital densities calculated at the DFT level. We show on two prototypical use cases that using the screening parameters predicted by this model, instead of those calculated from linear response, leads to orbital energies that differ by less than 20 meV on average. Since this approach dramatically reduces run-times with minimal loss of accuracy, it will enable the application of Koopmans spectral functionals to classes of problems that previously would have been prohibitively expensive, such as the prediction of temperature-dependent spectral properties. More broadly, this work demonstrates that measuring violations of piecewise linearity (i.e. curvature in total energies with respect to occupancies) can be done efficiently by combining frozen-orbital approximations and machine learning.},
-  archiveprefix = {arXiv},
-  keywords = {Condensed Matter - Materials Science,Physics - Chemical Physics,Physics - Computational Physics}
+  month = dec,
+  journal = {npj Comput Mater},
+  volume = {10},
+  number = {1},
+  pages = {1--12},
+  publisher = {Nature Publishing Group},
+  issn = {2057-3960},
+  doi = {10.1038/s41524-024-01484-3},
+  urldate = {2025-01-13},
+  abstract = {Koopmans spectral functionals are a powerful extension of Kohn-Sham density-functional theory (DFT) that enables the prediction of spectral properties with state-of-the-art accuracy. The success of these functionals relies on capturing the effects of electronic screening through scalar, orbital-dependent parameters. These parameters have to be computed for every calculation, making Koopmans spectral functionals more expensive than their DFT counterparts. In this work, we present a machine-learning model that—with minimal training—can predict these screening parameters directly from orbital densities calculated at the DFT level. We show in two prototypical use cases that using the screening parameters predicted by this model, instead of those calculated from linear response, leads to orbital energies that differ by less than 20\,meV on average. Since this approach dramatically reduces run times with minimal loss of accuracy, it will enable the application of Koopmans spectral functionals to classes of problems that previously would have been prohibitively expensive, such as the prediction of temperature-dependent spectral properties. More broadly, this work demonstrates that measuring violations of piecewise linearity (i.e., curvature in total energies with respect to occupancies) can be done efficiently by combining frozen-orbital approximations and machine learning.},
+  copyright = {2024 The Author(s)},
+  langid = {english},
+  keywords = {Computational methods,Condensed Matter - Materials Science,Electronic properties and materials,Electronic structure,Physics - Chemical Physics,Physics - Computational Physics}
 }
 
 @article{Schuler2021,
@@ -14875,6 +14881,23 @@ Subject\_term\_id: computational-methods;electronic-structure}
   copyright = {2008 Macmillan Publishers Limited. All rights reserved},
   langid = {english},
   keywords = {Humanities and Social Sciences,multidisciplinary,Science}
+}
+
+@misc{Stojkovic2024,
+  title = {Predicting the suitability of photocatalysts for water splitting using {{Koopmans}} spectral functionals: {{The}} case of {{TiO}}\$\_2\$ polymorphs},
+  shorttitle = {Predicting the suitability of photocatalysts for water splitting using {{Koopmans}} spectral functionals},
+  author = {Stojkovic, Marija and Linscott, Edward and Marzari, Nicola},
+  year = {2024},
+  month = dec,
+  number = {arXiv:2412.17488},
+  eprint = {2412.17488},
+  primaryclass = {cond-mat},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2412.17488},
+  urldate = {2025-01-13},
+  abstract = {Photocatalytic water splitting has attracted considerable attention for renewable energy production. Since the first reported photocatalytic water splitting by titanium dioxide, this material remains one of the most promising photocatalysts, due to its suitable band gap and band-edge positions. However, predicting both of these properties is a challenging task for existing computational methods. Here we show how Koopmans spectral functionals can accurately predict the band structure and level alignment of rutile, anatase, and brookite TiO\$\_2\$ using a computationally efficient workflow that only requires (a) a DFT calculation of the photocatalyst/vacuum interface and (b) a Koopmans spectral functional calculation of the bulk photocatalyst. The success of this approach for TiO\$\_2\$ suggests that this strategy could be deployed for assessing the suitability of novel photocatalyst candidates.},
+  archiveprefix = {arXiv},
+  keywords = {Condensed Matter - Materials Science,Physics - Chemical Physics,Physics - Computational Physics}
 }
 
 @article{Streltsov2017,
@@ -17618,14 +17641,4 @@ Subject\_term\_id: computational-methods;condensed-matter-physics}
   issn = {1549-9618},
   doi = {10.1021/acs.jctc.5b01014},
   urldate = {2019-07-08}
-}
-
-@misc{Stojkovic2024,
-      title={Predicting the suitability of photocatalysts for water splitting using Koopmans spectral functionals: The case of TiO$_2$ polymorphs}, 
-      author={Marija Stojkovic and Edward Linscott and Nicola Marzari},
-      year={2024},
-      eprint={2412.17488},
-      archivePrefix={arXiv},
-      primaryClass={cond-mat.mtrl-sci},
-      url={https://arxiv.org/abs/2412.17488}, 
 }

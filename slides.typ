@@ -347,18 +347,18 @@ The use-case
     align: center + horizon,
     gutter: 1em,
     image(
-      "figures/convergence_analysis_Eg_only.svg",
+      "figures/convergence_key.png",
+      height: 5%,
+    ) +  v(-1em) +
+    image(
+      "figures/convergence_fig.png",
       height: 55%,
     ),
-    image("figures/speedup.svg", height: 55%),
+    image("figures/speedup.png", height: 60%),
 
     [*accurate* to within $cal("O")$(10 meV) _cf._ typical band gap accuracy of $cal("O")$(100 meV)],
     [*speedup* of $cal("O")$(10) to $cal("O")$(100)],
   )
-
-  TODO REPLACE WITH UPDATED FIGURES
-
-  TODO UPDATE WITH NEW CITATION
 
   #blcite(<Schubert2024>)
 ]
@@ -428,14 +428,14 @@ but executed remotely and in parallel:
 
 
 == What did this require?
-#pause - `aiida-blitz` for simplified `AiiDA` setup #pause
-- `?` for dumping contents of `AiiDA` database to a local file structure #pause
+#pause 
+- new tools in `aiida-core`
+  - `presto` for simplified `AiiDA` setup
+  - `dump` for dumping contents of `AiiDA` database to a local directory
 - substantial refactoring of the `koopmans` code base #pause
   - abstraction of various operations (e.g. reading/writing files) #pause
   - conversion of steps to pure functions, _etc._ #pause
   - removing all reliance on shared directories
-
-TODO WORK OUT WHAT ARE THE PROPER NAMES FOR THESE AiiDA TOOLS
 
 == Automated Wannierization
 #slide(repeat: 4, self => [
