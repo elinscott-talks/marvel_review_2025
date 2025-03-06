@@ -33,10 +33,9 @@
 
 #title-slide()
 == This talk
-A whistlestop tour of our progress on Koopmans functionals over the past year
 
-#pause
-#grid(columns: 8, column-gutter: 0.5em, align: center, row-gutter: 0.5em,
+#align(center + horizon, 
+grid(columns: 8, column-gutter: 0.5em, align: center, row-gutter: 0.5em,
   image("media/mugshots/nicola_colonna.png", height: 40%),
   image("media/mugshots/marija_stojkovic.jpg", height: 40%),
   image("media/mugshots/giovanni_cistaro.jpeg", height: 40%),
@@ -47,8 +46,8 @@ A whistlestop tour of our progress on Koopmans functionals over the past year
   image("media/mugshots/nicola_marzari.jpeg", height: 40%),
   [Nicola Colonna], [Marija Stojkovic], [Giovanni Cistaro], [Yannick Schubert], [Junfeng Qiao], [Miki Bonacci], [Julian Geiger], [Nicola Marzari]
 )
-
-== Koopmans functionals in a nutshell
+)
+== Prologue: Koopmans functionals in a nutshell
 
 Spectral properties are fundamental to understanding materials:
 
@@ -110,7 +109,7 @@ canvas({
 - GW: accurate but expensive and often ill-behaved; diagrammatic #pause
 - DFT: plagued by systematic errors #pause
 
-💡Koopmans functionals: cure the systematic errors in DFT $arrow.r$ a functional that can accurately predict single-particle excitations
+💡Koopmans functionals: cure systematic errors in DFT $arrow.r$ a functional that can accurately predict single-particle excitations
 
 #pagebreak()
 
@@ -131,13 +130,20 @@ $
 
 
 == This talk
+#grid(
+  columns: (2fr, 2fr),
+  gutter: 1em,
+  image("figures/black_box_filled_square.png", width: 100%),
+  text[
+    Our goal with Koopmans functionals: black-box band structure calculations that are...
 
-Our goal with Koopmans functionals: band structure calculations that are...
+    - accurate
+    - efficient
+    - accessible
+    - automated
+  ],
+)
 
-- accurate
-- efficient
-- accessible
-- automated
 
 = Accuracy
 == The accuracy of Koopmans functionals
@@ -213,29 +219,29 @@ table.hline(),
 [without SOC], [1.40], [2.09], [2.56], [3.15], [3.12], [],
 )
 
-#slide()[
-TiO#sub[2] #blcite(<Stojkovic2024>)
-
-#v(-2em)
-#align(center, image("figures/rutile.png", height: 60%))
-#show table.cell: it => {
-  if it.x == 5 {
-    set text(fill: marvel-red, weight: "semibold")
-    it
-  } else {
-    it
-  }
-}
-#v(-1em)
-
-#table(align: center, columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr), inset: 0.5em, stroke: none,
-table.header([], [PBE ], [HSE06 ], [G#sub[0]W#sub[0]\@PBE ], [scQPG#sym.tilde[W]], [KI ], [exp - ZPR]),
-table.hline(),
-[$E_"gap"$], [1.73], [3.39], [3.46], [5.18], [3.29], [3.34 to 3.41],
-[IP], [7.22], [8.66], [7.29], [8.77], [8.00], [8.5],
-[EA], [5.55], [4.99], [3.03], [3.59], [4.71], [5.0]
-)
-]
+// #slide()[
+// TiO#sub[2] #blcite(<Stojkovic2024>)
+// 
+// #v(-2em)
+// #align(center, image("figures/rutile.png", height: 60%))
+// #show table.cell: it => {
+//   if it.x == 5 {
+//     set text(fill: marvel-red, weight: "semibold")
+//     it
+//   } else {
+//     it
+//   }
+// }
+// #v(-1em)
+// 
+// #table(align: center, columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr), inset: 0.5em, stroke: none,
+// table.header([], [PBE ], [HSE06 ], [G#sub[0]W#sub[0]\@PBE ], [scQPG#sym.tilde[W]], [KI ], [exp - ZPR]),
+// table.hline(),
+// [$E_"gap"$], [1.73], [3.39], [3.46], [5.18], [3.29], [3.34 to 3.41],
+// [IP], [7.22], [8.66], [7.29], [8.77], [8.00], [8.5],
+// [EA], [5.55], [4.99], [3.03], [3.59], [4.71], [5.0]
+// )
+// ]
 
 
 = Efficiency
@@ -262,34 +268,31 @@ $
   Function("CalculateAlpha", args: ($n$,), {
     For(cond: $bold(q) in "BZ"$,
     {
-      Cmt[NSCF at $bold(k)$, $bold(k) + bold(q)$]
         For(cond: $bold(k) in "BZ"$,
         {
-          Cmt[Linear system $A x = b$ with $"dim"(A)= n_"pw"^2$]
-          Assign[$Pi^((r))_(0 n, bold(q))$][$angle.l Delta rho^(0 n)_(bold(q)) | f_"Hxc" | rho^(0 n)_(bold(q)) angle.r$]
-          Assign[$Pi^((u))_(0 n, bold(q))$][$angle.l rho^(0 n)_bold(q) | f_"Hxc" | rho^(0 n)_bold(q) angle.r$]
+          Cmt[Linear system $A x = b$ to obtain $Delta psi_(bold(k)+bold(q),v)(bold(r))$]
       })
+          Assign[$Delta rho^(0n)_(q)$][$sum_(bold(k)v)psi^*_(bold(k)v) (bold(r))Delta psi_(bold(k)+bold(q),v)(bold(r)) + c.c.$]
+          Assign[$Pi^((r))_(0 n, bold(q))$][$angle.l Delta rho^(0 n)_(bold(q))|f_"Hxc"|rho^(0 n)_(bold(q)) angle.r$]
+          Assign[$Pi^((u))_(0 n, bold(q))$][$angle.l rho^(0 n)_bold(q)|f_"Hxc"|rho^(0 n)_bold(q) angle.r$]
     })
-    Return[$sum_bold(q) Pi^((r))_(0 n, q) \/ sum_bold(q) Pi^((u))_(0 n, bold(q))$]
+    Return[$1 + sum_bold(q) Pi^((r))_(0 n, bold(q)) \/ sum_bold(q) Pi^((u))_(0 n, bold(q))$]
   })
 })
 
 #pause Use symmetry to reduce the terms in the sums:
 #pause
-- $bold(q) in "BZ" $ $arrow.r$ $bold(q) in "IBZ"(n)$ #pause (and adding appropriate weights to the final sum) #pause
-- $bold(k) in "BZ"$ $arrow.r$ $bold(k) in "IBZ"(bold(q))$
+- $bold(q) in "BZ" $ $arrow.r$ $bold(q) in "IBZ"(n)$ (the symmetry of the perturbation; lower than that of the primitive cell)
+- $bold(k) in "BZ"$ $arrow.r$ $bold(k) in "IBZ"(bold(q))$ (can only use symmetries that leave $bold(q)$ invariant)
 
-TODO DOUBLE-CHECK THIS WITH NICOLA
-
-#slide[
-TODO
-
-Inner sum
-
-Outer sum
-
-Speedup figure
+#matrix-slide[
+#image("figures/bz-to-ibz-outer.svg", width: 100%)
+][
+#pause
+#image("figures/bz-to-ibz-inner.svg", width: 100%)
 ]
+
+#align(horizon + center, image("figures/bz-to-ibz-speedup.svg", height: 100%))
 
 == Electronic screening via machine learning
 #slide[
@@ -307,6 +310,8 @@ Speedup figure
       $alpha_i$,
     ),
   )
+
+  #pause
 
   $
     c^i_(n l m, k) & = integral dif bold(r) g_(n l) (r) Y_(l m)(theta,phi) n_i (
@@ -379,11 +384,11 @@ The use-case
 #matrix-slide()[
   #image("figures/website_cropped.png")
 ][
-  An ongoing effort to make Koopmans functional calculations straightforward for non-experts@Linscott2023
+  #blcite(<Linscott2023>)
   
+  - automated workflows that wrap `Quantum ESPRESSO`
   - easy installation
-  - automated workflows
-  - minimal knowledge required from the user
+  - minimal technical knowledge required from the user
   
   See `koopmans-functionals.org`
 ]
@@ -393,13 +398,12 @@ The use-case
 
 #matrix-slide(align: top + left)[
   #image("media/logos/koopmans_grey_on_transparent.svg", height: 2em)
-  Simple by design #pause
-  - local execution only #pause
-  - serial step execution (even when steps are independent!) #pause
-  - direct access to input/output files #pause
-  - simple installation #pause
+  Simple by design
+  - local execution only
+  - serial step execution (even when steps are independent!)
+  - direct access to input/output files
+  - simple installation
 ][
-  #pause
   #image("media/logos/aiida.svg", height: 2em)
   Powerful by design #pause
   - remote execution #pause
@@ -426,46 +430,34 @@ but executed remotely and in parallel:
   image("figures/aiida-speed-up.svg", width: 90%)
 )
 
-
 == What did this require?
 #pause 
 - new tools in `aiida-core`
   - `presto` for simplified `AiiDA` setup
-  - `dump` for dumping contents of `AiiDA` database to a local directory
-- substantial refactoring of the `koopmans` code base #pause
-  - abstraction of various operations (e.g. reading/writing files) #pause
-  - conversion of steps to pure functions, _etc._ #pause
-  - removing all reliance on shared directories
+  - `dump` for dumping contents of `AiiDA` database to a local directory #pause
+- substantial refactoring of the `koopmans` code base
+  - abstraction of various operations (e.g. reading/writing files)
+  - conversion of steps to pure functions e.g. removing all reliance on shared directories
 
-== Automated Wannierization
-#slide(repeat: 4, self => [
-  #let (uncover, only, alternatives) = utils.methods(self)
-
-  #pause Koopmans functionals rely heavily on Wannier functions...
+== Automated Wannierisation
+  Koopmans functionals rely heavily on Wannier functions...
   - to initialize the minmising orbitals, _or_
-  - in place of the minimizing orbitals entirely
-  
-  #pause However, Wannierization #alternatives(start: 3)[is a very manual process...][*was* a very manual process!]
+  - in place of the minimising orbitals entirely
 
-])
-
-== Automated Wannierization
+#pause
 
 #grid(
   columns: (2fr, 2fr, 3fr),
   align: center + horizon,
   gutter: 1em,
-  image("figures/proj_disentanglement_fig1a.png", height: 60%),
-  image("figures/new_projs.png", height: 60%),
-  image("figures/target_manifolds_fig1b.png", height: 60%),
+  image("figures/proj_disentanglement_fig1a.png", height: 40%),
+  image("figures/new_projs.png", height: 40%),
+  image("figures/target_manifolds_fig1b.png", height: 40%),
 
   text("projectability-based disentanglement") + cite(<Qiao2023>),
   text("use PAOs found in pseudopotentials"),
   text("parallel transport to separate manifolds") + cite(<Qiao2023a>),
 )
-
-
-
 
 = Summary
 == Summary
@@ -474,17 +466,17 @@ but executed remotely and in parallel:
   gutter: 1em,
   image("figures/black_box_filled_square.png", width: 100%),
   text[
-    Koopmans functionals are... #pause
+    Koopmans functionals are... 
     - *accurate*, with band structures comparable to state-of-the-art GW
-      - now also for systems with strong SOC #pause
+      - now also for systems with strong SOC
     - more *efficient* thanks to
       - DFPT that now takes advantage of symmetries
-      - a new machine learning framework for predicting screening parameters #pause
-    - more *accessible* thanks to ongoing work on the `koopmans` package #pause
+      - a new machine learning framework for predicting screening parameters
+    - more *accessible* thanks to ongoing work on the `koopmans` package
     - more *automated* thanks to
-      - a new `AiiDA` backend ...#pause
-        with an `AiiDAlab` app on the horizon! #pause
-      - automated Wannierization
+      - a new `AiiDA` backend ...
+        with an `AiiDAlab` app on the horizon!
+      - automated Wannierisation
   ],
 )
 #focus-slide()[Thank you!]
